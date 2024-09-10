@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaun Banega Crorepati</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #question { font-size: 1.5em; margin: 20px; }
+        .option { display: block; margin: 10px 0; }
+        #timer { font-size: 1.2em; color: red; }
+        #prize { font-size: 1.2em; margin-top: 20px; }
+    </style>
+    <audio id="play"><source src="kbcsongs.mp3"></audio>
+    <audio id="answer"><source src="correct.mp3.mp3"></audio>
+
+    <script>
+        function gamestart()
+        {
+            document.getElementById('start').style.display='block';
+            document.getElementById('start').style.color='black';
+            document.getElementById('song').style.display='none'
+            document.getElementById('play').play()
+            startGame()
+        }
+    </script>
+ 
+</head>
+<body background="kbc3.jpg" style="background-size:cover">
+    <div>
+        <button id="song" onclick="gamestart()">start game</button>
+    </div>
+    <div style="display: none;" id="start">
+
+    <div style="color:white;" align="center" id="question"></div>
+    <div align="center" id="options">
+        <button class="option" onclick="submitAnswer('a')">Option A</button>
+        <button class="option" onclick="submitAnswer('b')">Option B</button>
+        <button class="option" onclick="submitAnswer('c')">Option C</button>
+    </div>
+    <div style="color: white;" align="center" id="timer">Time Left: <span id="time">30</span> seconds</div>
+    <div id="prize">Prize: <span id="prizeAmount">0</span></div>
+
+    </div>
+    <script>
+
+    let questions = [
+    {
+        question: "What is the capital of France?",
+        options: { a: "Berlin", b: "paris", c: "madrid" },
+        correctAnswer: "b",
+        prize: 1000
+    },
+    // Add more questions as needed
+];
+
+let currentQuestionIndex = 0;
+let timer;
+let timeLeft = 30;
+let prizeAmount = 0;
+
+function startGame() {
+    displayQuestion();
+    startTimer();
+}
+
+function displayQuestion() {
+    let question = questions[currentQuestionIndex];
+    document.getElementById('question').innerText = question.question;
+    let options = question.options;
+    document.querySelector('.option:nth-child(1)').innerText = 'A: ' + options.a;
+    document.querySelector('.option:nth-child(2)').innerText = 'B: ' + options.b;
+    document.querySelector('.option:nth-child(3)').innerText = 'C: ' + options.c;
+}
+
+function startTimer() {
+    timeLeft = 30;
+    document.getElementById('time').innerText = timeLeft;
+    timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById('time').innerText = timeLeft;
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            alert("Time's up! The correct answer was " + questions[currentQuestionIndex].correctAnswer);
+            // Move to the next question or end game
+            nextQuestion();
+        }
+    }, 1000);
+}
+
+function submitAnswer(answer) {
+    clearInterval(timer);
+    let correctAnswer = questions[currentQuestionIndex].correctAnswer;
+    if (answer === correctAnswer) {
+        prizeAmount = questions[currentQuestionIndex].prize;
+        document.getElementById('answer').play()
+        document.getElementById('prizeAmount').innerText = prizeAmount;
+        alert("Correct answer! You've won " + prizeAmount);
+
+
+    } else {
+        alert("Wrong answer! The correct answer was " + correctAnswer);
+    }
+    nextQuestion();
+}
+
+function nextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+        displayQuestion();
+        startTimer();
+    } else {
+        alert("Congratulations! You've completed the game.");
+        // Optionally reset the game or display final prize
+    }
+}
+
+// Initialize game
+// startGame();
+</script>
+
+</body>
+</html>
